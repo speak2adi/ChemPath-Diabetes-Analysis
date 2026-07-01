@@ -5,6 +5,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import root_mean_squared_error
+from sklearn.metrics import r2_score
+
 df = pd.read_csv('../data/diabetes.csv')
 print(df.head())
 
@@ -64,3 +66,6 @@ print("Mean Squared Error: ", mse)
 rmse = root_mean_squared_error(y_test, glucose_pred)
 print("Root Mean Squared Error: ", rmse)
 
+#Using R2 which explains how much in variation in the target variable the model explains
+r2 = r2_score(y_test, glucose_pred)
+print("R2 Score: ", r2)
