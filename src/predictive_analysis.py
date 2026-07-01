@@ -2,7 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import root_mean_squared_error
 df = pd.read_csv('../data/diabetes.csv')
 print(df.head())
 
@@ -47,3 +49,18 @@ comparison['Actual Glucose'] = y_test
 comparison['Predicted Glucose'] = glucose_pred
 
 print(comparison.head(10))
+
+# Evaluating the Linear Regression Model
+# MAE, MSE and RMSE are used to answer how wrong our model is
+# Using MAE(Mean Absolute Error)
+mae = mean_absolute_error(y_test, glucose_pred)
+print("Mean Absolute Error: ", mae)
+
+#Using MSE(Mean Squared Error)
+mse = mean_squared_error(y_test, glucose_pred)
+print("Mean Squared Error: ", mse)
+
+#Using RMSE (Root Mean Squared Error)
+rmse = root_mean_squared_error(y_test, glucose_pred)
+print("Root Mean Squared Error: ", rmse)
+
