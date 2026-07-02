@@ -7,6 +7,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import r2_score
 
+
 df = pd.read_csv('../data/diabetes.csv')
 print(df.head())
 
@@ -69,3 +70,39 @@ print("Root Mean Squared Error: ", rmse)
 #Using R2 which explains how much in variation in the target variable the model explains
 r2 = r2_score(y_test, glucose_pred)
 print("R2 Score: ", r2)
+
+# For multiple regression
+# y being the dependent variable(Target) and x the independent variable(Feature)
+yy = df['Glucose'] #Series (1D)
+xx = df[
+    [
+        'Pregnancies',
+        'BloodPressure',
+        'SkinThickness',
+        'Insulin',
+        'BMI',
+        'DiabetesPedigreeFunction',
+        'Age'
+    ]
+] #Dataframe 2D
+
+#Splitting the data for multiple regression training
+x_train, x_test, y_train, y_test = train_test_split(
+    xx, yy,
+    test_size = 0.2, random_state = 42
+)
+
+multiple_model = LinearRegression()
+multiple_model.fit(x_train, y_train)
+
+glucose_prediction = multiple_model.predict(x_test)
+mul_mae = mean_absolute_error(y_test, glucose_prediction)
+print(f"Mean Absolute Error:  {mul_mae:.2f} ")
+mul_mse = mean_squared_error(y_test, glucose_prediction)
+print(f"Mean Squared Error: {mul_mse:.2f} ")
+mul_rmse = root_mean_squared_error(y_test, glucose_prediction)
+print(f"Root Mean Squared Error: {mul_rmse:.2f} ")
+mul_r2 = r2_score(y_test, glucose_prediction)
+print(f"R2 Score: {mul_r2:.4f}")
+print("Slope (Coefficient):", multiple_model.coef_)
+print("Intercept:", multiple_model.intercept_)
