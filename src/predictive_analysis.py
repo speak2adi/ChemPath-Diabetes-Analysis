@@ -6,7 +6,7 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.metrics import mean_squared_error
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import r2_score
-
+from sklearn.preprocessing import PolynomialFeatures
 
 df = pd.read_csv('../data/diabetes.csv')
 print(df.head())
@@ -106,3 +106,36 @@ mul_r2 = r2_score(y_test, glucose_prediction)
 print(f"R2 Score: {mul_r2:.4f}")
 print("Slope (Coefficient):", multiple_model.coef_)
 print("Intercept:", multiple_model.intercept_)
+
+xxx = df[['BMI']]
+yyy = df['Glucose']
+
+poly = PolynomialFeatures(
+    degree = 2,
+    include_bias = False
+)
+
+# Transforming the dataframe xxx so we can include another column with the 2nd degree polynomial
+x_poly = poly.fit_transform(xxx)
+
+#Important to note that Polynomial regression is just linear regression applied to transformed features
+x_train, x_test, y_train, y_test = train_test_split(
+    x_poly, yyy,
+    test_size = 0.2, random_state = 42
+)
+
+polynomial_model = LinearRegression()
+polynomial_model.fit(x_train, y_train)
+
+glu_pred = polynomial_model.predict(x_test)
+pol_mse = mean_squared_error(y_test, glu_pred)
+print(f"Pol Mean Squared Error:  {pol_mse:.2f} ")
+pol_mae = mean_absolute_error(y_test, glu_pred)
+print(f"Pol Mean Absolute Error:  {pol_mae:.2f} ")
+pol_rmse = root_mean_squared_error(y_test, glu_pred)
+print(f"Pol Root Mean Squared Error:  {pol_rmse:.2f} ")
+pol_r2 = r2_score(y_test, glu_pred)
+print(f"Pol R2 Score: {pol_r2:.4f}")
+
+
+
