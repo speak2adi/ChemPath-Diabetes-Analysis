@@ -7,7 +7,10 @@ from sklearn.metrics import mean_squared_error
 from sklearn.metrics import root_mean_squared_error
 from sklearn.metrics import r2_score
 from sklearn.preprocessing import PolynomialFeatures
-
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (
+    accuracy_score, confusion_matrix, classification_report
+)
 df = pd.read_csv('../data/diabetes.csv')
 print(df.head())
 
@@ -138,4 +141,45 @@ pol_r2 = r2_score(y_test, glu_pred)
 print(f"Pol R2 Score: {pol_r2:.4f}")
 
 
+#Logistic regression is a type of regression that predicts outcomes between 0 and 1
+#Despite its name, its not a regression algorithm but a classification algorithm
+#We're trying to ask if the patient is diabetic which either gives us a yes or no
 
+target_value_y = df['Outcome']
+x = df[
+    [
+        "Pregnancies",
+        "Glucose",
+        "BloodPressure",
+        "SkinThickness",
+        "Insulin",
+        "BMI",
+        "DiabetesPedigreeFunction",
+        "Age"
+    ]
+]
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x, target_value_y,
+    test_size = 0.2, random_state = 42
+)
+
+logistic_model = LogisticRegression(max_iter=1000)
+logistic_model.fit(x_train, y_train)
+#Getting the predictions for the outcome
+out_pred = logistic_model.predict(x_test)
+print(f'Logistical Predictions {out_pred}')
+out_prob = logistic_model.predict_proba(x_test)
+print(f'Logistical Probability {out_prob}')
+
+#Accuracy Score for our Logistical Model
+accuracy = accuracy_score(y_test, out_pred)
+print("Accuracy Score: ", accuracy)
+
+#Confusion Matrix
+confusion_matrix = confusion_matrix(y_test, out_pred)
+print("Confusion Matrix: ", confusion_matrix)
+
+#Classification Report
+classification_report = classification_report(y_test, out_pred)
+print("Classification Report: ", classification_report)
