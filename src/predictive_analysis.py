@@ -11,6 +11,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score, confusion_matrix, classification_report
 )
+from sklearn.metrics import roc_curve, roc_auc_score
+
 df = pd.read_csv('../data/diabetes.csv')
 print(df.head())
 
@@ -183,3 +185,25 @@ print("Confusion Matrix: ", confusion_matrix)
 #Classification Report
 classification_report = classification_report(y_test, out_pred)
 print("Classification Report: ", classification_report)
+
+# AUC and ROC
+# Probability of the positive class (diabetes)
+dia_pred = logistic_model.predict_proba(x_test)[:, 1]
+
+# Computing ROC Values
+fpr, tpr, thresholds = roc_curve(y_test, dia_pred)
+
+# Computing AUC
+auc = roc_auc_score(y_test, dia_pred)
+print("AUC SCORE : ", auc)
+
+# PLOTTING ROC CURVE
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % auc)
+plt.plot([0, 1], [0, 1], linestyle="--", label="Random Guess")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate (Recall)")
+plt.title("ROC Curve")
+plt.legend()
+plt.grid(True)
+plt.show()
